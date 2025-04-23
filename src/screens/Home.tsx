@@ -2,12 +2,10 @@ import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import AllItems from './AllItems.tsx';
 import Create from './Create.tsx';
-import Item from '../pojo/Item.ts';
 
 function Home(): React.JSX.Element {
   const [view, setView] = useState(0);
   const [itemList, setItemList] = useState([
-    new Item(1, 'Wheat', 'kg', 10),
     {id: 2, name: 'Wheat', unit: 'kg', stock: 10},
     {id: 3, name: 'Wheat', unit: 'kg', stock: 9},
     {id: 4, name: 'Wheat', unit: 'kg', stock: 10},

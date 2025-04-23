@@ -15,9 +15,7 @@ interface CreateProps {
 }
 
 const Create = (params: CreateProps) => {
-  const [name, setName] = useState('');
-  const [stock, setStock] = useState(0);
-  const [id, setId] = useState(0);
+  const [item, setItem] = useState<Item>(new Item());
 
   const addItem = () => {
     const newItem: Item = {
@@ -25,42 +23,39 @@ const Create = (params: CreateProps) => {
         params.itemList && params.itemList.length > 0
           ? Math.max(...params.itemList.map(item => item.id)) + 1
           : 1,
-      name: name,
+      name: item.name,
       unit: 'kg',
-      stock: stock,
+      stock: item.stock,
     };
-    setName('');
-    setStock(0);
-    params.setItemList([...(params.itemList || []), newItem]);
+    setItem(new Item());
+    params.setItemList([newItem, ...(params.itemList || [])]);
   };
 
   function editItem(item: Item): void {
-    setName(item.name);
-    setStock(item.stock);
-    setId(item.id);
+    setItem(item);
   }
 
   const deleteItem = (item: Item) => {
-    params.itemList = params.itemList?.filter(it => it.id !== item.id);
     params.setItemList(params.itemList?.filter(it => it.id !== item.id) || []);
   };
 
   const result = (
     <View style={styles.container}>
-      <TextInput style={{display: 'none'}}>{id}</TextInput>
+      <TextInput style={{display: 'none'}}>{item.id}</TextInput>
+
       <TextInput
         placeholder="Enter item name.."
         style={styles.input}
-        value={name}
-        onChangeText={item => setName(item)}
+        value={item.name}
+        onChangeText={(name: string) => setItem({...item, name: name})}
       />
 
       <TextInput
         keyboardType="numeric"
         placeholder="Enter item stock.."
         style={styles.input}
-        value={stock === 0 ? '' : stock.toString()}
-        onChangeText={item => setStock(parseInt(item))}
+        value={item.stock === 0 ? '' : item.stock?.toString()}
+        onChangeText={stock => setItem({...item, stock: parseInt(stock) || 0})}
       />
 
       <Pressable style={styles.button} onPress={() => addItem()}>
@@ -73,6 +68,7 @@ const Create = (params: CreateProps) => {
         <Text style={styles.headingText}>Quantity</Text>
         <Text style={styles.headingText}>Action</Text>
       </View>
+
       <FlatList
         data={params.itemList}
         keyExtractor={(item: Item): string => item.id.toString()}
